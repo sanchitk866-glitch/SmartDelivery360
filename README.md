@@ -175,7 +175,7 @@ Mapped to DP-600 (Fabric Analytics Engineer) exam domains:
 **Sanchit Kumar** — B.Sc. Life Sciences (Data Science track), building toward a Data Scientist / AI Engineer role.
 Built as part of Microsoft DP-600 certification prep and ongoing data science portfolio development.
 
-Connect on [LinkedIn](#) · More projects on [GitHub](#)
+Connect on [LinkedIn](https://www.linkedin.com/in/sanchit-kumar-rai/) · More projects on [GitHub](https://github.com/sanchitk866-glitch)
 
 ---
 
