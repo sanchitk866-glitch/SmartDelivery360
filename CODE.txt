@@ -1,0 +1,118 @@
+-- Load orders.csv
+
+orders_raw = spark.read.option("header", True).csv(path + "customers.csv")
+customers_raw = spark.read.option("header", True).csv(path + "orders.csv")
+products_raw = spark.read.option("header", True).csv(path + "payments.csv")
+order_items_raw = spark.read.option("header", True).csv(path + "support_tickets.csv")
+
+# Save as Bronze Delta Tables
+orders_raw.write.format("delta").mode("overwrite").saveAsTable("bronze_orders")
+orders_raw.write.format("delta").mode("overwrite").saveAsTable("bronze_customers")
+payments_raw.write.format("delta").mode("overwrite").saveAsTable("bronze_products")
+support_raw.write.format("delta").mode("overwrite").saveAsTable("bronze_order_items")
+
+
+
+🧽 2. 🔄 Silver Layer – Data Cleaning using Spark SQL
+
+silver_orders
+
+CREATE OR REPLACE TABLE silver_orders AS
+SELECT
+  CAST(OrderID AS STRING) AS OrderID,
+  CAST(CustomerID AS STRING) AS CustomerID,
+  TO_DATE(REPLACE(OrderDate, '/', '-')) AS OrderDate,
+  TO_DATE(REPLACE(ShippedDate, '/', '-')) AS ShippedDate,
+  TO_DATE(REPLACE(DeliveredDate, '/', '-')) AS DeliveredDate,
+  ROUND(CAST(Price AS DOUBLE), 2) AS Price,
+  INITCAP(TRIM(OrderChannel)) AS OrderChannel,
+  INITCAP(TRIM(Region)) AS Region,
+  TRIM(ReferredBy) AS ReferredBy
+FROM bronze_orders
+WHERE OrderID IS NOT NULL;
+
+silver_customers
+CREATE OR REPLACE TABLE silver_customers AS
+SELECT
+  CAST(CustomerID AS STRING) AS CustomerID,
+  INITCAP(TRIM(CustomerName)) AS CustomerName,
+  CASE 
+    WHEN LOWER(IsPremiumCustomer) IN ('yes', 'y') THEN 'Yes'
+    ELSE 'No'
+  END AS IsPremiumCustomer,
+  TO_DATE(SignupDate) AS SignupDate
+FROM bronze_customers
+WHERE CustomerID IS NOT NULL;
+
+silver_products
+CREATE OR REPLACE TABLE silver_products AS
+SELECT
+  CAST(ProductID AS STRING) AS ProductID,
+  INITCAP(TRIM(Category)) AS Category,
+  INITCAP(TRIM(Carrier)) AS Carrier,
+  ROUND(CAST(ShipmentCost AS DOUBLE), 2) AS ShipmentCost,
+  CASE 
+    WHEN LOWER(IsDiscounted) IN ('yes', 'y') THEN 'Yes'
+    ELSE 'No'
+  END AS IsDiscounted
+FROM bronze_products
+WHERE ProductID IS NOT NULL;
+
+
+silver_order_items
+CREATE OR REPLACE TABLE silver_order_items AS
+SELECT
+  CAST(OrderID AS STRING) AS OrderID,
+  CAST(ProductID AS STRING) AS ProductID,
+  CAST(Quantity AS INT) AS Quantity
+FROM bronze_order_items
+WHERE Quantity IS NOT NULL AND Quantity > 0;
+
+
+🧠 3. 🏅 Gold Layer – Create KPIs Table
+
+CREATE OR REPLACE TEMP VIEW orders_enriched AS
+SELECT
+  o.OrderID,
+  o.CustomerID,
+  o.OrderDate,
+  o.ShippedDate,
+  o.DeliveredDate,
+  o.Price,
+  o.Region,
+  o.OrderChannel,
+  o.ReferredBy,
+  c.CustomerName,
+  c.IsPremiumCustomer,
+  c.SignupDate,
+  i.ProductID,
+  i.Quantity,
+  p.Category,
+  p.Carrier,
+  p.ShipmentCost,
+  p.IsDiscounted,
+  DATEDIFF(o.DeliveredDate, o.ShippedDate) AS DeliveryDelay
+FROM silver_orders o
+LEFT JOIN silver_customers c ON o.CustomerID = c.CustomerID
+LEFT JOIN silver_order_items i ON o.OrderID = i.OrderID
+LEFT JOIN silver_products p ON i.ProductID = p.ProductID;
+
+Create Gold Aggregate Table
+CREATE OR REPLACE TABLE gold_order_kpis AS
+SELECT
+  CustomerID,
+  CustomerName,
+  IsPremiumCustomer,
+  Region,
+  OrderChannel,
+  COUNT(DISTINCT OrderID) AS TotalOrders,
+  SUM(Quantity) AS TotalQuantity,
+  SUM(Price) AS TotalRevenue,
+  ROUND(AVG(DeliveryDelay), 1) AS AvgDeliveryDelayDays,
+  COUNT(DISTINCT CASE WHEN DeliveryDelay > 3 THEN OrderID END) AS DelayedOrders,
+  ROUND(SUM(ShipmentCost), 2) AS TotalShipmentCost,
+  ROUND(SUM(CASE WHEN IsDiscounted = 'Yes' THEN Price ELSE 0 END), 2) AS RevenueFromDiscounted,
+  MAX(DeliveryDelay) AS MaxDeliveryDelay
+FROM orders_enriched
+GROUP BY 
+  CustomerID, CustomerName, IsPremiumCustomer, Region, OrderChannel;

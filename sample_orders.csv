@@ -1,0 +1,26 @@
+OrderID,CustomerID,OrderDate,Region,OrderChannel,ProductCategory,Quantity,TotalRevenue,RevenueFromDiscounted,TotalShipment,IsPremiumCustomer,DelayedOrder,DelayDays
+ORD0015,CUST002,2026-01-05,West,Online,Sports & Fitness,9,849.05,239.71,15.48,Yes,Yes,2
+ORD0003,CUST007,2026-01-08,North,Online,Home & Kitchen,4,1129.14,430.96,9.1,No,Yes,2
+ORD0019,CUST012,2026-01-09,North,Online,Beauty,6,1229.7,512.12,10.21,Yes,No,0
+ORD0021,CUST010,2026-01-15,West,Offline,Sports & Fitness,3,683.02,340.78,21.2,No,No,0
+ORD0010,CUST003,2026-01-19,South,Offline,Home & Kitchen,5,282.49,127.59,20.42,No,No,0
+ORD0020,CUST008,2026-01-23,North,Online,Sports & Fitness,6,1194.94,431.7,23.06,No,Yes,3
+ORD0024,CUST013,2026-01-27,East,Mobile App,Electronics,4,495.32,265.43,18.72,No,No,0
+ORD0018,CUST016,2026-02-10,North,Mobile App,Electronics,8,1187.23,310.13,17.82,Yes,Yes,3
+ORD0014,CUST002,2026-02-13,West,Online,Sports & Fitness,5,1435.29,689.79,23.93,Yes,No,0
+ORD0002,CUST001,2026-02-21,North,Online,Beauty,2,821.39,333.65,8.53,No,No,0
+ORD0005,CUST005,2026-02-24,East,Mobile App,Apparel,1,503.3,250.59,24.04,No,Yes,3
+ORD0013,CUST009,2026-03-02,West,Mobile App,Home & Kitchen,9,637.25,298.3,8.69,Yes,Yes,6
+ORD0008,CUST008,2026-03-02,North,Online,Electronics,7,839.0,349.2,25.18,No,No,0
+ORD0007,CUST009,2026-03-07,North,Online,Sports & Fitness,7,877.19,256.21,11.9,No,No,0
+ORD0001,CUST014,2026-03-16,East,Offline,Beauty,3,1208.39,422.3,13.71,Yes,No,0
+ORD0006,CUST001,2026-04-14,West,Offline,Sports & Fitness,1,896.85,465.33,20.09,Yes,Yes,4
+ORD0011,CUST012,2026-04-25,South,Offline,Electronics,7,502.1,167.89,15.36,No,No,0
+ORD0012,CUST011,2026-04-27,West,Mobile App,Apparel,2,511.58,229.1,12.02,No,No,0
+ORD0025,CUST004,2026-04-27,East,Offline,Home & Kitchen,8,592.85,199.95,17.9,No,Yes,5
+ORD0004,CUST006,2026-04-30,East,Offline,Sports & Fitness,1,701.45,179.91,25.05,Yes,No,0
+ORD0022,CUST015,2026-05-09,East,Online,Apparel,5,1882.93,927.3,20.47,Yes,Yes,6
+ORD0009,CUST013,2026-05-17,North,Mobile App,Electronics,7,693.93,196.09,21.59,No,Yes,5
+ORD0023,CUST006,2026-05-18,West,Online,Sports & Fitness,4,943.66,325.7,15.04,No,No,0
+ORD0016,CUST017,2026-05-25,North,Online,Electronics,2,1633.2,857.11,10.69,No,No,0
+ORD0017,CUST007,2026-05-27,East,Mobile App,Sports & Fitness,5,498.75,159.13,12.65,No,Yes,2
