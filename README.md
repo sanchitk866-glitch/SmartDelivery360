@@ -120,7 +120,7 @@ SmartDelivery360/
 
 ## Dashboard
 
-![SmartDelivery360 Dashboard](assets/dashboard-screenshot.png)
+![SmartDelivery360 Dashboard](dashboard-screenshot.png)
 
 The Power BI report includes:
 
